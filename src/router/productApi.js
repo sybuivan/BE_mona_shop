@@ -33,40 +33,58 @@ const getProducts = router.get("/product/:idCategory", (req, res, next) => {
   );
 });
 
-const getAllProductByParams = router.get(
-  "/products/",
-  (req, res, next) => {
-    // console.log(req.query.idCategory)
-    db.query(
-      `SELECT product.idProduct,product.name, price, productimages.thumbnailUrl ,
+const getAllProductByParams = router.get("/products/", (req, res, next) => {
+  console.log(req.query.sortByPrice);
+  let query = "";
+  if (req.query.idCategory && req.query.sortByPrice) {
+    query = `SELECT product.idProduct,product.name, price, productimages.thumbnailUrl ,
       category.name as categoryName
     FROM product, productimages, category
     WHERE product.idProduct = productimages.idProduct 
     and category.idCategory = product.idCategory
     and category.idCategory = '${req.query.idCategory}'
-    GROUP BY product.idProduct`,
-      (err, result) => {
-        // user does not exists
-        if (err) {
-          throw err;
-          return res.status(400).send({
-            msg: err,
-          });
-        }
-        if (!result.length) {
-          return res.status(401).send({
-            msg: "Data product is incorrect!",
-          });
-        } else {
-          return res.status(200).send({
-            msg: "Get product in successfully!",
-            products: result,
-          });
-        }
-      }
-    );
+    GROUP BY product.idProduct
+    ORDER BY product.price ${req.query.sortByPrice} `;
+  } else if (req.query.idCategory && req.query.sortBySale) {
+    query = `SELECT product.idProduct,product.name, price, productimages.thumbnailUrl ,
+      category.name as categoryName
+    FROM product, productimages, category
+    WHERE product.idProduct = productimages.idProduct 
+    and category.idCategory = product.idCategory
+    and category.idCategory = '${req.query.idCategory}'
+    GROUP BY product.idProduct
+    ORDER BY product.date_product ${req.query.sortBySale}`;
+  } else if (req.query.idCategory) {
+    query = `SELECT product.idProduct,product.name, price, productimages.thumbnailUrl ,
+      category.name as categoryName
+    FROM product, productimages, category
+    WHERE product.idProduct = productimages.idProduct 
+    and category.idCategory = product.idCategory
+    and category.idCategory = '${req.query.idCategory}'
+    GROUP BY product.idProduct`;
   }
-);
+
+  console.log(query);
+  db.query(query, (err, result) => {
+    // user does not exists
+    if (err) {
+      throw err;
+      return res.status(400).send({
+        msg: err,
+      });
+    }
+    if (!result.length) {
+      return res.status(401).send({
+        msg: "Data product is incorrect!",
+      });
+    } else {
+      return res.status(200).send({
+        msg: "Get product in successfully!",
+        products: result,
+      });
+    }
+  });
+});
 const getAllProductByCategory = router.get(
   "/products/:idCategory",
   (req, res, next) => {
@@ -147,6 +165,7 @@ const getDetailProduct = router.get(
     );
   }
 );
+
 const getDetailImages = router.get(
   "/product-detail-images/:productId",
   (req, res, next) => {
@@ -181,5 +200,5 @@ module.exports = {
   getDetailProduct,
   getDetailImages,
   getAllProductByParams,
-  getAllProductByCategory
+  getAllProductByCategory,
 };
