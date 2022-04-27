@@ -13,7 +13,11 @@ const {
   getAllProductByParams,
 } = require("./src/router/productApi");
 
-const { payMethod, orderDetails } = require("./src/router/checkoutApi");
+const {
+  payMethod,
+  orderDetails,
+  getIdOrder,
+} = require("./src/router/checkoutApi");
 
 const app = express();
 
@@ -43,6 +47,7 @@ app.use("/api", getDetailImages);
 // checkout
 app.use("/api", payMethod);
 app.use("/api", orderDetails);
+app.use("/api", getIdOrder);
 
 // Handling Errors
 app.use((err, req, res, next) => {
