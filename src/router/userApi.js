@@ -1,17 +1,17 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const db = require("../configs/dbConnection");
+const db = require('../configs/dbConnection');
 const {
   signupValidation,
   loginValidation,
-} = require("../validation/validation");
+} = require('../validation/validation');
 
-const { validationResult } = require("express-validator");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const { validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const routerRegister = router.post(
-  "/register",
+  '/register',
   signupValidation,
   (req, res, next) => {
     db.query(
@@ -21,14 +21,14 @@ const routerRegister = router.post(
       (err, result) => {
         if (result.length) {
           return res.status(401).send({
-            msg: "This email is already in use!",
+            msg: 'This email is already in use!',
           });
         } else {
           // username is available
           bcrypt.hash(req.body.password, 10, (err, hash) => {
             if (err) {
               return res.status(500).send({
-                msg: err,
+                msg: 'Error',
               });
             } else {
               // has hashed pw => add to database
@@ -39,10 +39,10 @@ const routerRegister = router.post(
                 (err, result) => {
                   if (err) {
                     throw err;
-                    return res.status(400).send({ msg: err });
+                    return res.status(400).send({ msg: 'Error' });
                   }
                   return res.status(401).send({
-                    msg: "The user has been registerd with us!",
+                    msg: 'The user has been registerd with us!',
                   });
                 }
               );
@@ -54,7 +54,7 @@ const routerRegister = router.post(
   }
 );
 
-const routerLogin = router.post("/login", loginValidation, (req, res, next) => {
+const routerLogin = router.post('/login', loginValidation, (req, res, next) => {
   db.query(
     `SELECT * FROM users WHERE email = ${db.escape(req.body.email)};`,
     (err, result) => {
@@ -65,40 +65,41 @@ const routerLogin = router.post("/login", loginValidation, (req, res, next) => {
           msg: err,
         });
       }
+      console.log(req.body);
       if (!result.length) {
         return res.status(401).send({
-          msg: "Email or password is incorrect!",
+          msg: 'Email or password is incorrect!',
         });
       }
       // check password
       bcrypt.compare(
         req.body.password,
-        result[0]["password"],
+        result[0]['password'],
         (bErr, bResult) => {
           // wrong password
           if (bErr) {
             throw bErr;
             return res.status(401).send({
-              msg: "Email or password is incorrect!",
+              msg: 'Email or password is incorrect!',
             });
           }
           if (bResult) {
             const token = jwt.sign(
               { id: result[0].id },
-              "the-super-strong-secrect",
-              { expiresIn: "1h" }
+              'the-super-strong-secrect',
+              { expiresIn: '1h' }
             );
             // db.query(
             //   `UPDATE users SET last_login = now() WHERE id = '${result[0].id}'`
             // );
             return res.status(200).send({
-              msg: "Logged in successfully!",
+              msg: 'Logged in successfully!',
               token,
               user: result[0],
             });
           }
           return res.status(401).send({
-            msg: "Username or password is incorrect!",
+            msg: 'Username or password is incorrect!',
           });
         }
       );
@@ -108,5 +109,5 @@ const routerLogin = router.post("/login", loginValidation, (req, res, next) => {
 
 module.exports = {
   routerRegister,
-  routerLogin
+  routerLogin,
 };

@@ -85,6 +85,7 @@ const getAllProductByParams = router.get("/products/", (req, res, next) => {
     }
   });
 });
+
 const getAllProductByCategory = router.get(
   "/products/:idCategory",
   (req, res, next) => {
