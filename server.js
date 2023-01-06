@@ -17,6 +17,8 @@ const {
   payMethod,
   orderDetails,
   getIdOrder,
+  addToCart,
+  getCarts,
 } = require('./src/router/checkoutApi');
 
 const app = express();
@@ -48,6 +50,8 @@ app.use('/api', getDetailImages);
 app.use('/api', payMethod);
 app.use('/api', orderDetails);
 app.use('/api', getIdOrder);
+app.use('/api', addToCart);
+app.use('/api', getCarts);
 
 // Handling Errors
 app.use((err, req, res, next) => {
@@ -60,5 +64,7 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 9000;
+
+console.log(process.env.PORT);
 
 app.listen(port, () => console.log('Server is running on port 5000'));
