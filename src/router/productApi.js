@@ -10,13 +10,13 @@ const getProducts = router.get("/product/:idCategory", (req, res, next) => {
     WHERE product.idProduct = productimages.idProduct 
     and category.idCategory = product.idCategory
     and product.idCategory = ${req.params.idCategory}
-    GROUP BY product.idProduct`,
+    `,
     (err, result) => {
       // user does not exists
       if (err) {
         throw err;
         return res.status(400).send({
-          msg: err,
+          msg: "Get list data error",
         });
       }
       if (!result.length) {
