@@ -58,7 +58,8 @@ const getIdOrder = router.get('/orders/getIdOrder', (req, res, next) => {
 const getCarts = router.get('/get-carts/:idUser', (req, res, next) => {
   const { idUser } = req.params;
   db.query(
-    `SELECT * from carts, product where product.idProduct = carts.idProduct and idUser = '${idUser}'`,
+    `SELECT * from carts, product, productimages
+    where product.idProduct = carts.idProduct and product.idProduct = productimages.idProduct and idUser = '${idUser}'`,
     (err, result) => {
       if (err) {
         throw err;
