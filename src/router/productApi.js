@@ -1,8 +1,8 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const db = require("../configs/dbConnection");
+const db = require('../configs/dbConnection');
 
-const getProducts = router.get("/product/:idCategory", (req, res, next) => {
+const getProducts = router.get('/product/:idCategory', (req, res, next) => {
   db.query(
     `SELECT product.idProduct,product.name,category.name as categoryName,path,
     price, productimages.thumbnailUrl 
@@ -16,16 +16,16 @@ const getProducts = router.get("/product/:idCategory", (req, res, next) => {
       if (err) {
         throw err;
         return res.status(400).send({
-          msg: "Get list data error",
+          msg: 'Get list data error',
         });
       }
       if (!result.length) {
         return res.status(401).send({
-          msg: "Data product is incorrect!",
+          msg: 'Data product is incorrect!',
         });
       } else {
         return res.status(200).send({
-          msg: "Get product in successfully!",
+          msg: 'Get product in successfully!',
           products: result,
         });
       }
@@ -33,9 +33,9 @@ const getProducts = router.get("/product/:idCategory", (req, res, next) => {
   );
 });
 
-const getAllProductByParams = router.get("/products/", (req, res, next) => {
+const getAllProductByParams = router.get('/products/', (req, res, next) => {
   console.log(req.query.sortByPrice);
-  let query = "";
+  let query = '';
   if (req.query.idCategory && req.query.sortByPrice) {
     query = `SELECT product.idProduct,product.name, price, productimages.thumbnailUrl ,
       category.name as categoryName
@@ -75,11 +75,11 @@ const getAllProductByParams = router.get("/products/", (req, res, next) => {
     }
     if (!result.length) {
       return res.status(401).send({
-        msg: "Data product is incorrect!",
+        msg: 'Data product is incorrect!',
       });
     } else {
       return res.status(200).send({
-        msg: "Get product in successfully!",
+        msg: 'Get product in successfully!',
         products: result,
       });
     }
@@ -87,7 +87,7 @@ const getAllProductByParams = router.get("/products/", (req, res, next) => {
 });
 
 const getAllProductByCategory = router.get(
-  "/products/:idCategory",
+  '/products/:idCategory',
   (req, res, next) => {
     // console.log(req.query.idCategory)
     db.query(
@@ -97,7 +97,7 @@ const getAllProductByCategory = router.get(
     WHERE product.idProduct = productimages.idProduct 
     and category.idCategory = product.idCategory
     and category.idCategory = '${req.params.idCategory}'
-    GROUP BY product.idProduct`,
+   `,
       (err, result) => {
         // user does not exists
         if (err) {
@@ -108,11 +108,11 @@ const getAllProductByCategory = router.get(
         }
         if (!result.length) {
           return res.status(401).send({
-            msg: "Data product is incorrect!",
+            msg: 'Data product is incorrect!',
           });
         } else {
           return res.status(200).send({
-            msg: "Get product in successfully!",
+            msg: 'Get product in successfully!',
             products: result,
           });
         }
@@ -122,28 +122,28 @@ const getAllProductByCategory = router.get(
 );
 
 const getDetailProduct = router.get(
-  "/product-detail/:productId",
+  '/product-detail/:productId',
   (req, res, next) => {
     db.query(
       `SELECT * FROM product, productimages
     WHERE product.idProduct = ${req.params.productId} and 
-    productimages.idProduct = product.idProduct GROUP BY product.idProduct`,
+    productimages.idProduct = product.idProduct`,
 
       (err, result) => {
         // user does not exists
         if (err) {
           throw err;
           return res.status(400).send({
-            msg: err,
+            msg: 'Lỗi get chi tiết ',
           });
         }
         if (!result.length) {
           return res.status(401).send({
-            msg: "Data product is incorrect!",
+            msg: 'Data product is incorrect!',
           });
         } else {
           return res.status(200).send({
-            msg: "Get detail product in successfully!",
+            msg: 'Get detail product in successfully!',
             productDetail: result,
           });
           // db.query(
@@ -168,7 +168,7 @@ const getDetailProduct = router.get(
 );
 
 const getDetailImages = router.get(
-  "/product-detail-images/:productId",
+  '/product-detail-images/:productId',
   (req, res, next) => {
     db.query(
       `SELECT thumbnailUrl,idImage FROM productimages 
@@ -183,11 +183,11 @@ const getDetailImages = router.get(
         }
         if (!result.length) {
           return res.status(401).send({
-            msg: "Data product is incorrect!",
+            msg: 'Data product is incorrect!',
           });
         } else {
           return res.status(200).send({
-            msg: "Get detail product in successfully!",
+            msg: 'Get detail product in successfully!',
             detailImages: result,
           });
         }
