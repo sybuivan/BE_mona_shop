@@ -21,6 +21,8 @@
     "express": "^4.17.3",
     "express-validator": "^6.14.0",
     "jsonwebtoken": "^8.5.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "uniqid": "^5.4.0",
+    "uuid": "^9.0.0"
   }
 }

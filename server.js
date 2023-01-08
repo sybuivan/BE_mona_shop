@@ -19,6 +19,7 @@ const {
   getIdOrder,
   addToCart,
   getCarts,
+  deleteCart,
 } = require('./src/router/checkoutApi');
 
 const app = express();
@@ -52,6 +53,7 @@ app.use('/api', orderDetails);
 app.use('/api', getIdOrder);
 app.use('/api', addToCart);
 app.use('/api', getCarts);
+app.use('/api', deleteCart);
 
 // Handling Errors
 app.use((err, req, res, next) => {
