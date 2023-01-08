@@ -23,6 +23,7 @@ const payMethod = router.post('/checkout', (req, res, next) => {
 
 const orderDetails = router.post('/orders/details', (req, res, next) => {
   const { idOrder, cartList } = req.body.params;
+  console.log(cartList);
   var querys =
     'INSERT INTO orderdetails(idOrder, idProduct, unitPrice, quantity) VALUES';
   for (const item of cartList) {
