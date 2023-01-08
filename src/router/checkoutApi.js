@@ -27,7 +27,7 @@ const orderDetails = router.post('/orders/details', (req, res, next) => {
   var querys =
     'INSERT INTO orderdetails(idOrder, idProduct, unitPrice, quantity) VALUES';
   for (const item of cartList) {
-    const unitPrice = item.product.price * item.quantity;
+    const unitPrice = item.price * item.quantity;
     querys += `(${idOrder}, ${item.idProduct},${unitPrice}, ${item.quantity}),`;
   }
   console.log(querys.substring(0, querys.length - 1));
