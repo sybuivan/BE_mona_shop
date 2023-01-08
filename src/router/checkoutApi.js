@@ -5,8 +5,9 @@ const uniqid = require('uniqid');
 
 const payMethod = router.post('/checkout', (req, res, next) => {
   const orderDate = new Date().toISOString().replace('T', ' ').substring(0, 19);
+  const statusOrder = 0;
   db.query(
-    `INSERT INTO orders (orderDate, idUser, totalPrice, address) VALUES ("${orderDate}", ${req.body.params.userId}, ${req.body.params.totalPrice}, "${req.body.params.address}")`,
+    `INSERT INTO orders (orderDate,statusOrder, idUser, totalPrice, address) VALUES ("${orderDate}",${statusOrder}, ${req.body.params.userId}, ${req.body.params.totalPrice}, "${req.body.params.address}")`,
     (err, result) => {
       if (err) {
         throw err;
@@ -92,17 +93,20 @@ const addToCart = router.post('/add-to-cart', (req, res, next) => {
   );
 });
 
-const deleteCart = router.delete('/delete-cart/:id', (req, res) => {
-  const { id } = req.params;
-  db.query(`Delete from carts where codeCart = '${id}'`, (err, result) => {
-    if (err) {
-      throw err;
-      return res.status(400).send({ msg: 'Delete to cart feild' });
+const deleteCart = router.delete('/delete-cart', (req, res) => {
+  const { idUser, idProduct } = req.query;
+  db.query(
+    `Delete from carts where idUser = ${idUser} and idProduct = ${idProduct}`,
+    (err, result) => {
+      if (err) {
+        throw err;
+        return res.status(400).send({ msg: 'Delete to cart feild' });
+      }
+      return res.status(200).send({
+        msg: 'Delete cart completed successfully',
+      });
     }
-    return res.status(200).send({
-      msg: 'Delete cart completed successfully',
-    });
-  });
+  );
 });
 
 module.exports = {
