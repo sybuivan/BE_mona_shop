@@ -10,49 +10,46 @@ const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const routerRegister = router.post(
-  '/register',
-  signupValidation,
-  (req, res, next) => {
-    db.query(
-      `SELECT * FROM users WHERE LOWER(email) = LOWER(${db.escape(
-        req.body.email
-      )});`,
-      (err, result) => {
-        if (result.length) {
-          return res.status(401).send({
-            msg: 'This email is already in use!',
-          });
-        } else {
-          // username is available
-          bcrypt.hash(req.body.password, 10, (err, hash) => {
-            if (err) {
-              return res.status(500).send({
-                msg: 'Error',
-              });
-            } else {
-              // has hashed pw => add to database
-              db.query(
-                `INSERT INTO users (fullName, email, password) VALUES ('${
-                  req.body.fullName
-                }', ${db.escape(req.body.email)}, ${db.escape(hash)})`,
-                (err, result) => {
-                  if (err) {
-                    throw err;
-                    return res.status(400).send({ msg: 'Error' });
-                  }
-                  return res.status(401).send({
-                    msg: 'The user has been registerd with us!',
-                  });
+const routerRegister = router.post('/register', (req, res, next) => {
+  console.log(req.body);
+  db.query(
+    `SELECT * FROM users WHERE LOWER(email) = LOWER(${db.escape(
+      req.body.email
+    )});`,
+    (err, result) => {
+      if (result.length) {
+        return res.status(401).send({
+          msg: 'This email is already in use!',
+        });
+      } else {
+        // username is available
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+          if (err) {
+            return res.status(500).send({
+              msg: 'Error',
+            });
+          } else {
+            // has hashed pw => add to database
+            db.query(
+              `INSERT INTO users (fullName, email, password) VALUES ('${
+                req.body.fullName
+              }', ${db.escape(req.body.email)}, ${db.escape(hash)})`,
+              (err, result) => {
+                if (err) {
+                  throw err;
+                  return res.status(400).send({ msg: 'Error' });
                 }
-              );
-            }
-          });
-        }
+                return res.status(401).send({
+                  msg: 'The user has been registerd with us!',
+                });
+              }
+            );
+          }
+        });
       }
-    );
-  }
-);
+    }
+  );
+});
 
 const routerLogin = router.post('/login', loginValidation, (req, res, next) => {
   db.query(
