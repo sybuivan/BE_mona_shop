@@ -3,7 +3,11 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { routerRegister, routerLogin } = require('./src/router/userApi');
+const {
+  routerRegister,
+  routerLogin,
+  updateUser,
+} = require('./src/router/userApi');
 const { routerCategories } = require('./src/router/categoryApi');
 const {
   getProducts,
@@ -20,6 +24,9 @@ const {
   addToCart,
   getCarts,
   deleteCart,
+  getOrdersUser,
+  getOrderDetails,
+  deleteOrderDetails,
 } = require('./src/router/checkoutApi');
 
 const app = express();
@@ -38,6 +45,7 @@ app.use(cors());
 
 app.use('/api', routerRegister);
 app.use('/api', routerLogin);
+app.use('/api', updateUser);
 
 app.use('/api', routerCategories);
 
@@ -54,6 +62,9 @@ app.use('/api', getIdOrder);
 app.use('/api', addToCart);
 app.use('/api', getCarts);
 app.use('/api', deleteCart);
+app.use('/api', getOrdersUser);
+app.use('/api', getOrderDetails);
+app.use('/api', deleteOrderDetails);
 
 // Handling Errors
 app.use((err, req, res, next) => {
